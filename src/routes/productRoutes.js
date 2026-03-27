@@ -56,6 +56,14 @@ router.get(
 )
 
 
+// Route pour compter le nombre de produits par catégorie de l'userId connecté
+router.get(
+    '/count/:nameCategory',
+    authMiddleware,
+    productController.countProductsByCategory
+)
+
+
 // Route pour récupérer un produit par ID
 router.get(
     '/:id',

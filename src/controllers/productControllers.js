@@ -17,11 +17,13 @@ exports.createProduct = async (req, res) => {
         });
 
         res.status(201).json({
+            success: true,
             message: 'Produit créé avec succès',
             product
         });
     } catch (error) {
         res.status(500).json({
+            success: false,
             message: error.message
         });
     }
@@ -34,10 +36,12 @@ exports.getAllProducts = async (req, res) => {
         const products = await productServices.getAllProducts();
 
         res.status(200).json({
+            success: true,
             products
         });
     } catch (error) {
         res.status(500).json({
+            success: false,
             message: error.message
         });
     }
@@ -52,10 +56,12 @@ exports.getProductById = async (req, res) => {
         const product = await productServices.getProductById(id);
 
         res.status(200).json({
+            success: true,
             product
         });
     } catch (error) {
         res.status(404).json({
+            success: false,
             message: error.message
         });
     }
@@ -73,6 +79,7 @@ exports.updateProductById = async (req, res) => {
 
         if (product.userId !== userId) {
             return res.status(403).json({
+                success: false,
                 message: 'Vous ne pouvez modifier que vos propres produits'
             });
         }
@@ -86,11 +93,13 @@ exports.updateProductById = async (req, res) => {
         });
 
         res.status(200).json({
+            success: true,
             message: 'Produit modifié avec succès',
             data: updatedProduct
         });
     } catch (error) {
         res.status(500).json({
+            success: false,
             message: error.message
         });
     }
@@ -107,6 +116,7 @@ exports.deleteProductById = async (req, res) => {
 
         if (product.userId !== userId) {
             return res.status(403).json({
+                success: false,
                 message: 'Vous ne pouvez supprimer que vos propres produits'
             });
         }
@@ -114,10 +124,12 @@ exports.deleteProductById = async (req, res) => {
         const result = await productServices.deleteProductById(id);
 
         res.status(200).json({
+            success: true,
             message: result.message
         });
     } catch (error) {
         res.status(500).json({
+            success: false,
             message: error.message
         });
     }
@@ -131,9 +143,13 @@ exports.getProductsByUserId = async (req, res) => {
 
         const getProducts = await productServices.getProductsByUserId(userId);
 
-        res.status(200).json(getProducts);
+        res.status(200).json({
+            success: true,
+            getProducts
+        });
     }catch(error){
         res.status(500).json({
+            success: false,
             message: error.message
         });
     }
@@ -148,9 +164,13 @@ exports.getProductsByCategory = async (req, res) => {
 
         const productsByCategorie = await productServices.getProductsByCategory(userId, category);
 
-        res.status(200).json(productsByCategorie)
+        res.status(200).json({
+            success: true,
+            productsByCategorie
+        })
     }catch(error){
         res.status(500).json({
+            success: false,
             message: error.message
         });
     }
@@ -165,9 +185,13 @@ exports.getProductByCategoryAndName = async (req, res) => {
 
         const productByCategorieAndName = await productServices.getProductByCategoryAndName(userId, category, name);
 
-        res.status(200).json(productByCategorieAndName);
+        res.status(200).json({
+            success: true,
+            productByCategorieAndName
+        });
     }catch(error){
         res.status(500).json({
+            success: false,
             message: error.message
         });
     }
@@ -182,10 +206,35 @@ exports.getProductsByStatut = async (req, res) => {
 
         const productsByStatut = await productServices.getProductsByStatut(userId, isActive);
 
-        res.status(200).json(productsByStatut);
+        res.status(200).json({
+            success: true,
+            productsByStatut
+        });
     }catch(error){
         res.status(500).json({
+            success: false,
             message: error.message
         });
+    }
+}
+
+
+// Compter le nombre de produits par catégorie pour l'utilisateur connecté
+exports.countProductsByCategory = async (req, res) => {
+    try{
+        const { nameCategory } = req.params;
+        const userId = req.user.userId;
+
+        const numberProductsByCategory = await productServices.countProductsByCategory(userId, nameCategory);
+
+        res.status(200).json({
+            success: true,
+            numberProductsByCategory
+        })
+    }catch(error){
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
     }
 }

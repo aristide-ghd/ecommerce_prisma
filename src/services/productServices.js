@@ -234,3 +234,23 @@ exports.getProductsByStatut = async (userId, isActive) => {
 
     return productsByStatut;
 }
+
+
+// Logique métier pour compter le nombre de produits de l'utilisateur connecté
+exports.countProductsByCategory = async (userId, category) => {
+    const countByCategory = await prisma.product.count({
+        where: {
+            userId,
+            category: {
+                equals: category,
+                mode: "insensitive"
+            }
+        }
+    })
+
+    if (!countByCategory) {
+        throw new Error('Aucun produit trouvé')
+    }
+
+    return countByCategory;
+}
