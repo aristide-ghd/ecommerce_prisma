@@ -4,9 +4,12 @@ const cors = require('cors');
 const helmet = require('helmet');
 
 const { globalLimiter } = require('./middlewares/rateLimiters');
+const errorHandler = require('./middlewares/errorHandler');
+const notFound = require('./middlewares/notFound');
 const authRoutes = require('./routes/authRoutes');
 const userRoutes = require('./routes/userRoutes');
 const productRoutes = require('./routes/productRoutes');
+const orderRoutes = require('./routes/orderRoutes');
 
 const app = express();
 
@@ -24,10 +27,17 @@ app.use(globalLimiter);
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/products', productRoutes);
+app.use('/api/orders', orderRoutes);
 
 // Test route
 app.get('/', (req, res) => {
     res.send('API is running');
 });
+
+// Middleware pour les routes non trouvées (doit être après toutes les routes)
+app.use(notFound);
+
+// Middleware de gestion globale des erreurs (doit être en dernier)
+app.use(errorHandler);
 
 module.exports = app;

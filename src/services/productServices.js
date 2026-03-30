@@ -1,4 +1,5 @@
 const { prisma } = require('../../lib/prisma');
+const { notFoundError, conflictError, ERROR_CODES } = require('../errors');
 
 // Logique metier pour ajouter un produit
 exports.createProduct = async (data) => {
@@ -13,7 +14,7 @@ exports.createProduct = async (data) => {
     })
 
     if (existingProduct) {
-        throw new Error('Cet produit existe déja');
+        throw conflictError('Ce produit existe déjà', ERROR_CODES.PRODUCT_ALREADY_EXISTS);
     }
 
     const registerProduct = await prisma.product.create({
@@ -58,7 +59,7 @@ exports.getAllProducts = async () => {
     });
 
     if (products.length === 0) {
-        throw new Error('Produits non trouvé');
+        throw notFoundError('Aucun produit trouvé', ERROR_CODES.PRODUCT_NOT_FOUND);
     }
 
     return products;
@@ -81,7 +82,7 @@ exports.getProductById = async (productId) => {
     });
 
     if (!product) {
-        throw new Error('Produit non trouvé');
+        throw notFoundError('Produit non trouvé', ERROR_CODES.PRODUCT_NOT_FOUND);
     }
 
     return product;
@@ -98,7 +99,7 @@ exports.updateProductById = async (productId, data) => {
     });
 
     if (!existingProduct) {
-        throw new Error('Produit non trouvé');
+        throw notFoundError('Produit non trouvé', ERROR_CODES.PRODUCT_NOT_FOUND);
     }
 
     const updatedProduct = await prisma.product.update({
@@ -133,7 +134,7 @@ exports.deleteProductById = async (productId) => {
     });
 
     if (!existingProduct) {
-        throw new Error('Produit non trouvé');
+        throw notFoundError('Produit non trouvé', ERROR_CODES.PRODUCT_NOT_FOUND);
     }
 
     await prisma.product.delete({
@@ -157,7 +158,7 @@ exports.getProductsByUserId = async (userId) => {
     })
 
     if (getProducts.length === 0) {
-        throw new Error('Produits non trouvé')
+        throw notFoundError('Aucun produit trouvé', ERROR_CODES.PRODUCT_NOT_FOUND);
     }
 
     return getProducts;
@@ -178,7 +179,7 @@ exports.getProductsByCategory = async (userId, category) => {
     })
 
     if (productsByCategory.length === 0) {
-        throw new Error('Aucun produit trouvé')
+        throw notFoundError('Aucun produit trouvé', ERROR_CODES.PRODUCT_NOT_FOUND);
     }
 
     return productsByCategory;
@@ -203,7 +204,7 @@ exports.getProductByCategoryAndName = async (userId, category, name) => {
     })
 
     if (!productByCategorieAndName) {
-        throw new Error('Aucun produit trouvé')
+        throw notFoundError('Aucun produit trouvé', ERROR_CODES.PRODUCT_NOT_FOUND);
     }
 
     return productByCategorieAndName;
@@ -229,7 +230,7 @@ exports.getProductsByStatut = async (userId, isActive) => {
     })
 
     if (productsByStatut.length === 0) {
-        throw new Error('Aucun produit trouvé')
+        throw notFoundError('Aucun produit trouvé', ERROR_CODES.PRODUCT_NOT_FOUND);
     }
 
     return productsByStatut;
@@ -249,7 +250,7 @@ exports.countProductsByCategory = async (userId, category) => {
     })
 
     if (!countByCategory) {
-        throw new Error('Aucun produit trouvé')
+        throw notFoundError('Aucun produit trouvé', ERROR_CODES.PRODUCT_NOT_FOUND);
     }
 
     return countByCategory;

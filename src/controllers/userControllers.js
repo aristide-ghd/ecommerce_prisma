@@ -1,20 +1,18 @@
 const userServices = require('../services/userServices');
 
 // Retourne la liste de tous les utilisateurs
-exports.getUsers = async(req, res) => {
+exports.getUsers = async(req, res, next) => {
     try{
         const result = await userServices.getUsers();
 
         res.status(200).json(result);
     }catch(error){
-        res.status(400).json({
-            message: error.message
-        })
+        next(error);
     }
 }
 
 // Retourne les infos d'un utilisateur par son id
-exports.getUserById = async (req, res) => {
+exports.getUserById = async (req, res, next) => {
     try {
         const { id } = req.params;
 
@@ -22,15 +20,13 @@ exports.getUserById = async (req, res) => {
 
         res.status(200).json(result);
     }catch(error){
-        res.status(400).json({
-            message: error.message
-        })
+        next(error);
     }
 }
 
 
 // Vérifie si id = userId, exige que l'utilisateur soit connecter, récupéré les infos, appelle le service et gere les erreurs
-exports.modifyUserById = async(req, res) => {
+exports.modifyUserById = async(req, res, next) => {
     try {
         const { id } = req.params;
         const userId = req.user.userId;
@@ -50,14 +46,12 @@ exports.modifyUserById = async(req, res) => {
             data: result
         });
     } catch (error) {
-        res.status(400).json({
-            message: error.message
-        });
+        next(error);
     }
 }
 
 // Vérifie si id = userId et supprime l'utilisateur
-exports.deleteUserById = async (req, res) => {
+exports.deleteUserById = async (req, res, next) => {
     try{
         const { id } = req.params;
         const userId = req.user.userId;
@@ -73,8 +67,6 @@ exports.deleteUserById = async (req, res) => {
 
         res.status(200).json(result);
     }catch (error) {
-        res.status(400).json({
-            message: error.message
-        });
+        next(error);
     }
 }

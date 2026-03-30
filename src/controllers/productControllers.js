@@ -1,8 +1,7 @@
 const productServices = require('../services/productServices');
-const {prisma} = require("../../lib/prisma");
 
 // Créer un produit
-exports.createProduct = async (req, res) => {
+exports.createProduct = async (req, res, next) => {
     try {
         const userId = req.user.userId; // Récupéré depuis le JWT
         const { name, description, price, stock, category } = req.body;
@@ -22,16 +21,13 @@ exports.createProduct = async (req, res) => {
             product
         });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
+        next(error);
     }
 };
 
 
 // Récupérer tous les produits
-exports.getAllProducts = async (req, res) => {
+exports.getAllProducts = async (req, res, next) => {
     try {
         const products = await productServices.getAllProducts();
 
@@ -40,16 +36,13 @@ exports.getAllProducts = async (req, res) => {
             products
         });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
+        next(error);
     }
 };
 
 
 // Récupérer un produit par son ID
-exports.getProductById = async (req, res) => {
+exports.getProductById = async (req, res, next) => {
     try {
         const { id } = req.params;
 
@@ -60,16 +53,13 @@ exports.getProductById = async (req, res) => {
             product
         });
     } catch (error) {
-        res.status(404).json({
-            success: false,
-            message: error.message
-        });
+        next(error);
     }
 };
 
 
 // Modifier un produit
-exports.updateProductById = async (req, res) => {
+exports.updateProductById = async (req, res, next) => {
     try {
         const { id } = req.params;
         const userId = req.user.userId;
@@ -98,16 +88,13 @@ exports.updateProductById = async (req, res) => {
             data: updatedProduct
         });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
+        next(error);
     }
 };
 
 
 // Supprimé un produit
-exports.deleteProductById = async (req, res) => {
+exports.deleteProductById = async (req, res, next) => {
     try {
         const { id } = req.params;
         const userId = req.user.userId;
@@ -128,16 +115,13 @@ exports.deleteProductById = async (req, res) => {
             message: result.message
         });
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
+        next(error);
     }
 };
 
 
 // Récupérer la liste des produits d'un utilisateur
-exports.getProductsByUserId = async (req, res) => {
+exports.getProductsByUserId = async (req, res, next) => {
     try{
         const userId = req.user.userId;
 
@@ -148,16 +132,13 @@ exports.getProductsByUserId = async (req, res) => {
             getProducts
         });
     }catch(error){
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
+        next(error);
     }
 }
 
 
 // Récupérer la liste des produits d'un utilisateur par catégorie
-exports.getProductsByCategory = async (req, res) => {
+exports.getProductsByCategory = async (req, res, next) => {
     try{
         const { category } = req.params;
         const userId = req.user.userId;
@@ -169,16 +150,13 @@ exports.getProductsByCategory = async (req, res) => {
             productsByCategorie
         })
     }catch(error){
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
+        next(error);
     }
 }
 
 
 // Récupérer la liste des produits d'un utilisateur par catégorie et nom
-exports.getProductByCategoryAndName = async (req, res) => {
+exports.getProductByCategoryAndName = async (req, res, next) => {
     try{
         const { category, name } = req.query;
         const userId = req.user.userId;
@@ -190,16 +168,13 @@ exports.getProductByCategoryAndName = async (req, res) => {
             productByCategorieAndName
         });
     }catch(error){
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
+        next(error);
     }
 }
 
 
 // Retourner la liste des produits d'un utilisateur par statut
-exports.getProductsByStatut = async (req, res) => {
+exports.getProductsByStatut = async (req, res, next) => {
     try{
         const { isActive } = req.query;
         const userId = req.user.userId;
@@ -211,16 +186,13 @@ exports.getProductsByStatut = async (req, res) => {
             productsByStatut
         });
     }catch(error){
-        res.status(500).json({
-            success: false,
-            message: error.message
-        });
+        next(error);
     }
 }
 
 
 // Compter le nombre de produits par catégorie pour l'utilisateur connecté
-exports.countProductsByCategory = async (req, res) => {
+exports.countProductsByCategory = async (req, res, next) => {
     try{
         const { nameCategory } = req.params;
         const userId = req.user.userId;
@@ -232,9 +204,6 @@ exports.countProductsByCategory = async (req, res) => {
             numberProductsByCategory
         })
     }catch(error){
-        res.status(500).json({
-            success: false,
-            message: error.message
-        })
+        next(error);
     }
 }

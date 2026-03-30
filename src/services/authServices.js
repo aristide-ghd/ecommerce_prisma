@@ -1,6 +1,7 @@
 const {prisma} = require('../../lib/prisma');
 const argon2 = require('argon2');
 const jwt = require('jsonwebtoken');
+const { conflictError, unauthorizedError, validationError, ERROR_CODES } = require('../errors');
 
 // Logique metier pour l'inscription de l'utilisateur
 exports.register = async ({ name, email, password }) => {
@@ -10,7 +11,7 @@ exports.register = async ({ name, email, password }) => {
     });
 
     if (existingUser) {
-        throw new Error('Utilisateur deja existant');
+        throw conflictError('Utilisateur déjà existant', ERROR_CODES.USER_EMAIL_EXISTS);
     }
 
     const hashedPassword = await argon2.hash(password);
@@ -39,7 +40,7 @@ exports.register = async ({ name, email, password }) => {
 exports.login = async ({ email, password }) => {
 
     if (!email || !password) {
-        throw new Error("L'email et le mot de passe sont requis");
+        throw validationError("L'email et le mot de passe sont requis", ERROR_CODES.VALIDATION_MISSING_FIELD);
     }
 
     const existingEmail = await prisma.user.findUnique({
@@ -47,7 +48,7 @@ exports.login = async ({ email, password }) => {
     });
 
     if (!existingEmail?.password) {
-        throw new Error('Identifiants invalides');
+        throw unauthorizedError('Identifiants invalides', ERROR_CODES.AUTH_INVALID_CREDENTIALS);
     }
 
     const isValid = await argon2.verify(
@@ -56,7 +57,7 @@ exports.login = async ({ email, password }) => {
     );
 
     if (!isValid) {
-        throw new Error('Identifiants invalides');
+        throw unauthorizedError('Identifiants invalides', ERROR_CODES.AUTH_INVALID_CREDENTIALS);
     }
 
     const token = jwt.sign(

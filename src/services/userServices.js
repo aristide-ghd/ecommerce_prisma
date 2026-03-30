@@ -1,4 +1,5 @@
 const {prisma} = require('../../lib/prisma');
+const { notFoundError, ERROR_CODES } = require('../errors');
 
 
 //Logique metier pour récupérer tous les utilisateurs
@@ -36,7 +37,7 @@ exports.getUserById = async(id) => {
     });
 
     if (!user) {
-        throw new Error('Utilisateur non trouvé');
+        throw notFoundError('Utilisateur non trouvé', ERROR_CODES.USER_NOT_FOUND);
     }
 
     return {
@@ -52,7 +53,7 @@ exports.modifyUserById = async(userId, {name, email}) => {
     });
 
     if (!existingUser) {
-        throw new Error('Utilisateur non trouvé');
+        throw notFoundError('Utilisateur non trouvé', ERROR_CODES.USER_NOT_FOUND);
     }
 
     // Mettre à jour l'utilisateur
@@ -84,7 +85,7 @@ exports.deleteUserById = async(userId) => {
     });
 
     if (!existingUser) {
-        throw new Error('Utilisateur non trouvé');
+        throw notFoundError('Utilisateur non trouvé', ERROR_CODES.USER_NOT_FOUND);
     }
 
     // Supprimer l'utilisateur
