@@ -144,7 +144,7 @@ exports.deleteProductById = async (productId) => {
 };
 
 
-// Logique métier pour récupérer la liste des produits de l'utilisateur connecté par ordre decroissant des prix
+// Logique métier pour récupérer la liste des produits de l'utilisateur connecté par ordre décroissant des prix
 exports.getProductsByUserId = async (userId) => {
 
     const getProducts = await prisma.product.findMany({
@@ -236,7 +236,7 @@ exports.getProductsByStatut = async (userId, isActive) => {
 }
 
 
-// Logique métier pour compter le nombre de produits de l'utilisateur connecté
+// Logique métier pour compter le nombre de produits de l'utilisateur connecté par category
 exports.countProductsByCategory = async (userId, category) => {
     const countByCategory = await prisma.product.count({
         where: {

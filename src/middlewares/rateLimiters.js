@@ -15,6 +15,6 @@ exports.loginLimiter = rateLimit({
     max: 5, // 5 tentatives de connexion toutes les 15 minutes
     skipSuccessfulRequests: true, // Ne compte que les échecs
     message: {
-        message: 'Trop de tentatives de connexion, réessayez dans 15 minutes'
+        message: 'Trop de tentatives de connexion, reesayer plus tard'
     }
 });

@@ -7,31 +7,92 @@ datasource db {
 }
 
 model User {
-  id        String    @id @default(dbgenerated("gen_random_uuid()"))
+  id        String     @id @default(dbgenerated("gen_random_uuid()"))
   name      String
-  email     String    @unique
+  email     String     @unique
   password  String
-  createdAt DateTime  @default(now())
-  updatedAt DateTime  @updatedAt
-  products  Product[] // Relation
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  products  Product[]  // Relation : produits vendus par l'utilisateur
+  commandes Commande[] // Relation : commandes passées par l'utilisateur
 
   @@map("users")
 }
 
 model Product {
-  id          String   @id @default(dbgenerated("gen_random_uuid()"))
+  id          String           @id @default(dbgenerated("gen_random_uuid()"))
   name        String
   description String
-  price       Decimal  @db.Decimal(10, 2)
-  stock       Int      @default(0)
+  price       Decimal          @db.Decimal(10, 2)
+  stock       Int              @default(0)
   category    String?
-  isActive    Boolean  @default(true)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  isActive    Boolean          @default(true)
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
 
   // Relation avec User
   userId String
   user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  // Relation avec BonDeCommande
+  bonDeCommandes BonDeCommande[]
+
   @@map("products")
+}
+
+model Commande {
+  id             String   @id @default(dbgenerated("gen_random_uuid()"))
+  numeroCommande String   @unique // Ex: "CMD-2024-001"
+  montantTotal Decimal @db.Decimal(10, 2)  // Montant
+  // Statuts
+  statut         StatutCommande @default(EN_ATTENTE)
+  statutPaiement StatutPaiement @default(EN_ATTENTE)
+  dateCommande DateTime @default(now())  // Date
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relation avec User (client qui passe la commande)
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Relation avec BonDeCommande (lignes de commande)
+  bonDeCommandes BonDeCommande[]
+
+  @@map("commandes")
+}
+
+// Enum pour les statuts de commande
+enum StatutCommande {
+  EN_ATTENTE // En attente
+  CONFIRMEE  // Confirmée
+  LIVREE     // Livrée
+  ANNULEE    // Annulée
+}
+
+// Enum pour les statuts de paiement
+enum StatutPaiement {
+  EN_ATTENTE // En attente
+  PAYEE      // Payée
+}
+
+model BonDeCommande {
+  id String @id @default(dbgenerated("gen_random_uuid()"))
+  nomProduit String
+  quantite     Int
+  prixUnitaire Decimal @db.Decimal(10, 2)
+  prixTotal    Decimal @db.Decimal(10, 2)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // Relation avec Commande
+  commandeId String
+  commande   Commande @relation(fields: [commandeId], references: [id], onDelete: Cascade)
+
+  // Relation avec Product
+  productId String
+  product   Product @relation(fields: [productId], references: [id], onDelete: Restrict)
+
+  @@map("bon_de_commandes")
 }
