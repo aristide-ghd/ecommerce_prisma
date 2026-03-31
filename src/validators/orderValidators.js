@@ -10,7 +10,8 @@ exports.createOrderSchema = Joi.object({
                 }),
                 quantite: Joi.number().integer().min(1).required().messages({
                     'any.required': 'La quantité est requise',
-                    'number.base': 'La quantité doit être un nombre',
+                    'number.base': 'La quantité doit être un nombre entier (pas une chaîne de caractères)',
+                    'number.integer': 'La quantité doit être un nombre entier (pas de décimales)',
                     'number.min': 'La quantité doit être au moins 1'
                 })
             })
@@ -21,7 +22,7 @@ exports.createOrderSchema = Joi.object({
             'any.required': 'La liste des produits est requise',
             'array.min': 'La commande doit contenir au moins un produit'
         })
-});
+}).options({ convert: false });
 
 exports.updateOrderStatusSchema = Joi.object({
     statut: Joi.string()
@@ -29,7 +30,7 @@ exports.updateOrderStatusSchema = Joi.object({
         .required()
         .messages({
             'any.required': 'Le statut est requis',
-            'any.only': 'Le statut doit être EN_ATTENTE, CONFIRMEE, LIVREE ou ANNULEE'
+            'any.only': 'Le statut est incorrecte'
         })
 });
 
@@ -39,6 +40,6 @@ exports.updatePaymentStatusSchema = Joi.object({
         .required()
         .messages({
             'any.required': 'Le statut de paiement est requis',
-            'any.only': 'Le statut de paiement doit être EN_ATTENTE ou PAYEE'
+            'any.only': 'Le statut de paiement est incorrecte'
         })
 });

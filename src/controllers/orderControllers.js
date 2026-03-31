@@ -1,4 +1,5 @@
 const orderServices = require('../services/orderServices');
+const { forbiddenError } = require('../errors/errorFactory');
 
 // Créer une commande
 exports.createOrder = async (req, res, next) => {
@@ -44,10 +45,7 @@ exports.getOrderById = async (req, res, next) => {
         
         // Vérifier que l'utilisateur est propriétaire de la commande
         if (commande.userId !== userId) {
-            return res.status(403).json({
-                success: false,
-                message: 'Vous ne pouvez consulter que vos propres commandes'
-            });
+            throw forbiddenError('Vous ne pouvez consulter que vos propres commandes');
         }
         
         res.status(200).json({
@@ -70,10 +68,8 @@ exports.updateOrderStatus = async (req, res, next) => {
         
         // Vérifier que l'utilisateur est propriétaire
         if (commande.userId !== userId) {
-            return res.status(403).json({
-                success: false,
-                message: 'Vous ne pouvez modifier que vos propres commandes'
-            });
+            const { forbiddenError } = require('../errors/errorFactory');
+            throw forbiddenError('Vous ne pouvez modifier que vos propres commandes');
         }
         
         const updatedCommande = await orderServices.updateOrderStatus(id, statut);
@@ -99,10 +95,8 @@ exports.updatePaymentStatus = async (req, res, next) => {
         
         // Vérifier que l'utilisateur est propriétaire
         if (commande.userId !== userId) {
-            return res.status(403).json({
-                success: false,
-                message: 'Vous ne pouvez modifier que vos propres commandes'
-            });
+            const { forbiddenError } = require('../errors/errorFactory');
+            throw forbiddenError('Vous ne pouvez modifier que vos propres commandes');
         }
         
         const updatedCommande = await orderServices.updatePaymentStatus(id, statutPaiement);
@@ -127,10 +121,8 @@ exports.cancelOrder = async (req, res, next) => {
         
         // Vérifier que l'utilisateur est propriétaire
         if (commande.userId !== userId) {
-            return res.status(403).json({
-                success: false,
-                message: 'Vous ne pouvez annuler que vos propres commandes'
-            });
+            const { forbiddenError } = require('../errors/errorFactory');
+            throw forbiddenError('Vous ne pouvez annuler que vos propres commandes');
         }
         
         const cancelledCommande = await orderServices.cancelOrder(id);

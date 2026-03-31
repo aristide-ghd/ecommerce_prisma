@@ -73,8 +73,8 @@ router.get(
 
 
 // Route pour modifier un produit par ID
-router.put(
-    '/:id',
+router.patch(
+    '/:id/update',
     authMiddleware,
     validate(updateProductSchema),
     productController.updateProductById
@@ -83,7 +83,7 @@ router.put(
 
 // Route pour supprimer un produit
 router.delete(
-    '/:id',
+    '/:id/cancel',
     authMiddleware,
     productController.deleteProductById
 )

@@ -21,7 +21,7 @@ const badRequestError = (message = 'Requête invalide', errorCode = ERROR_CODES.
     return createError(message, 400, errorCode);
 };
 
-// Erreur 401 - Non authentifié
+// Erreur 401 - Non authentifiée
 const unauthorizedError = (message = 'Authentification requise', errorCode = ERROR_CODES.AUTH_UNAUTHORIZED) => {
     return createError(message, 401, errorCode);
 };

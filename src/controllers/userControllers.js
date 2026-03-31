@@ -34,9 +34,8 @@ exports.modifyUserById = async(req, res, next) => {
 
         // Vérifier que l'utilisateur modifie bien son propre profil
         if (id !== userId) {
-            return res.status(403).json({
-                message: 'Vous ne pouvez modifier que votre propre profil'
-            });
+            const { forbiddenError } = require('../errors/errorFactory');
+            throw forbiddenError('Vous ne pouvez modifier que votre propre profil');
         }
 
         const result = await userServices.modifyUserById(userId, {name, email});
@@ -58,9 +57,8 @@ exports.deleteUserById = async (req, res, next) => {
 
         // Vérifier que l'utilisateur supprime bien son propre profil
         if (id !== userId) {
-            return res.status(403).json({
-                message: 'Vous ne pouvez supprimer que votre propre profil'
-            });
+            const { forbiddenError } = require('../errors/errorFactory');
+            throw forbiddenError('Vous ne pouvez supprimer que votre propre profil');
         }
 
         const result = await userServices.deleteUserById(userId);

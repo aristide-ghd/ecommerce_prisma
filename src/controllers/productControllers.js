@@ -68,10 +68,8 @@ exports.updateProductById = async (req, res, next) => {
         const product = await productServices.getProductById(id);
 
         if (product.userId !== userId) {
-            return res.status(403).json({
-                success: false,
-                message: 'Vous ne pouvez modifier que vos propres produits'
-            });
+            const { forbiddenError } = require('../errors/errorFactory');
+            throw forbiddenError('Vous ne pouvez modifier que vos propres produits');
         }
 
         const updatedProduct = await productServices.updateProductById(id, {
@@ -102,10 +100,8 @@ exports.deleteProductById = async (req, res, next) => {
         const product = await productServices.getProductById(id);
 
         if (product.userId !== userId) {
-            return res.status(403).json({
-                success: false,
-                message: 'Vous ne pouvez supprimer que vos propres produits'
-            });
+            const { forbiddenError } = require('../errors/errorFactory');
+            throw forbiddenError('Vous ne pouvez supprimer que vos propres produits');
         }
 
         const result = await productServices.deleteProductById(id);

@@ -22,8 +22,8 @@ router.get(
 
 
 // Route protégée - Modifier son propre profil
-router.put(
-    '/:id',
+router.patch(
+    '/:id/update',
     authMiddleware,
     validate(modifyUserByIdSchema),
     userControllers.modifyUserById
@@ -32,7 +32,7 @@ router.put(
 
 //Route protégée - Supprimer son propre profil
 router.delete(
-    '/:id',
+    '/:id/cancel',
     authMiddleware,
     userControllers.deleteUserById
 )
