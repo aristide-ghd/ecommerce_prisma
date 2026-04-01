@@ -68,7 +68,6 @@ exports.updateOrderStatus = async (req, res, next) => {
         
         // Vérifier que l'utilisateur est propriétaire
         if (commande.userId !== userId) {
-            const { forbiddenError } = require('../errors/errorFactory');
             throw forbiddenError('Vous ne pouvez modifier que vos propres commandes');
         }
         
@@ -95,7 +94,6 @@ exports.updatePaymentStatus = async (req, res, next) => {
         
         // Vérifier que l'utilisateur est propriétaire
         if (commande.userId !== userId) {
-            const { forbiddenError } = require('../errors/errorFactory');
             throw forbiddenError('Vous ne pouvez modifier que vos propres commandes');
         }
         
@@ -121,7 +119,6 @@ exports.cancelOrder = async (req, res, next) => {
         
         // Vérifier que l'utilisateur est propriétaire
         if (commande.userId !== userId) {
-            const { forbiddenError } = require('../errors/errorFactory');
             throw forbiddenError('Vous ne pouvez annuler que vos propres commandes');
         }
         
@@ -136,3 +133,29 @@ exports.cancelOrder = async (req, res, next) => {
         next(error);
     }
 };
+
+
+// supprimer une commande
+exports.deleteOrder = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user.userId;
+
+        const commande = await orderServices.getOrderById(id);
+
+        // Vérifier que l'utilisateur est propriétaire
+        if (commande.userId !== userId) {
+            throw forbiddenError('Vous ne pouvez supprimer que vos propres commandes');
+        }
+
+        const deletedCommande = await orderServices.deleteOrder(id);
+
+        res.status(200).json({
+            success: true,
+            message: deletedCommande.message
+        })
+
+    }catch (error) {
+        next(error);
+    }
+}

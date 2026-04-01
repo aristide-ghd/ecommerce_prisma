@@ -297,3 +297,23 @@ exports.cancelOrder = async (orderId) => {
     
     return updatedCommande;
 };
+
+
+//Logique métier pour supprimer une commande
+exports.deleteOrder = async(orderId) => {
+    const commande = await prisma.commande.findUnique({
+        where: {
+            id: orderId
+        }
+    })
+
+    if (!commande) {
+        throw notFoundError('Commande non trouvée', ERROR_CODES.ORDER_NOT_FOUND)
+    }
+
+    await prisma.commande.delete({
+        where: { id: orderId }
+    })
+
+    return { message: "Commande supprimée avec succès" }
+}

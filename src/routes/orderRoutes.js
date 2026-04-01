@@ -54,4 +54,11 @@ router.patch(
     orderController.cancelOrder
 );
 
+// Route pour supprimer une commande
+router.delete(
+    '/:id/delete',
+    authMiddleware,
+    orderController.deleteOrder
+)
+
 module.exports = router;
