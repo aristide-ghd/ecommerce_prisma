@@ -31,6 +31,13 @@ router.get(
     orderController.getUserOrders
 );
 
+// Route pour le nombre de commandes et le montant total dépensé
+router.get(
+    '/stats',
+    authMiddleware,
+    orderController.getNumberOrders
+)
+
 // Route pour récupérer une commande par ID
 router.get(
     '/:id',

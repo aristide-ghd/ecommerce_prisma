@@ -141,7 +141,29 @@ exports.createOrder = async (userId, items) => {
 
 // Logique métier pour récupérer toutes les commandes
 exports.getOrders = async () => {
-    const getOrders = await prisma.commande.findMany();
+    const getOrders = await prisma.commande.findMany({
+        include: {
+            bonDeCommandes: {
+                include: {
+                    product: {
+                        select: {
+                            id: true,
+                            name: true,
+                            price: true,
+                            category: true
+                        }
+                    }
+                }
+            },
+            user: {
+                select: {
+                    id: true,
+                    name: true,
+                    email: true
+                }
+            }
+        }
+    });
 
     if ( getOrders.length === 0 ) {
         throw notFoundError('Aucune commande trouvé');
@@ -329,4 +351,42 @@ exports.deleteOrder = async(orderId) => {
     })
 
     return { message: "Commande supprimée avec succès" }
+}
+
+
+// Logique métier pour récupérer le nombre de commandes et le montant total dépensé
+exports.getNumberOrders = async (userId) => {
+    const result = await prisma.commande.aggregate({
+        where: {
+            userId: userId
+        },
+        _sum: {
+            montantTotal: true
+        },
+        _count: {
+            id: true
+        }
+    })
+
+    if (!result) {
+        throw notFoundError('Commande non trouvée', ERROR_CODES.ORDER_NOT_FOUND)
+    }
+
+    return result;
+}
+
+
+// Logique pour afficher les commandes par statut
+exports.getOrdersStatus = async(statut) => {
+    const result = await prisma.commande.findMany({
+        where: {
+            statut: statut
+        }
+    })
+
+    if (!result) {
+        throw notFoundError('Commande non trouvée', ERROR_CODES.ORDER_NOT_FOUND)
+    }
+
+    return result;
 }

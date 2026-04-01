@@ -179,3 +179,31 @@ exports.deleteOrder = async (req, res, next) => {
         next(error);
     }
 }
+
+
+// Nombre de commandes et montant total dépensé
+exports.getNumberOrders = async (req, res, next) => {
+    try{
+        const userId = req.user.userId;
+
+        const numberOrders = await orderServices.getNumberOrders(userId);
+
+        res.status(200).json({
+            success: true,
+            data: numberOrders
+        })
+    }catch (error) {
+        next(error);
+    }
+}
+
+
+// Afficher les commandes par statut
+exports.getOrdersByStatus = async (req, res, next) => {
+    try{
+        const { status } = req.query;
+
+    }catch (error) {
+        next(error);
+    }
+}
