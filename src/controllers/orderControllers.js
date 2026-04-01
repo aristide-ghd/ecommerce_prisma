@@ -19,6 +19,22 @@ exports.createOrder = async (req, res, next) => {
     }
 };
 
+
+// Récupérer toutes les commandes
+exports.getOrders = async (req, res, next) => {
+    try {
+        const orders = await orderServices.getOrders();
+
+        res.status(200).json({
+            success: true,
+            data: orders
+        })
+    }catch (error) {
+        next(error);
+    }
+}
+
+
 // Récupérer les commandes de l'utilisateur connecté
 exports.getUserOrders = async (req, res, next) => {
     try {
@@ -34,6 +50,7 @@ exports.getUserOrders = async (req, res, next) => {
         next(error);
     }
 };
+
 
 // Récupérer une commande par ID
 exports.getOrderById = async (req, res, next) => {
@@ -56,6 +73,7 @@ exports.getOrderById = async (req, res, next) => {
         next(error);
     }
 };
+
 
 // Mettre à jour le statut de la commande
 exports.updateOrderStatus = async (req, res, next) => {
@@ -83,6 +101,7 @@ exports.updateOrderStatus = async (req, res, next) => {
     }
 };
 
+
 // Mettre à jour le statut de paiement
 exports.updatePaymentStatus = async (req, res, next) => {
     try {
@@ -108,6 +127,7 @@ exports.updatePaymentStatus = async (req, res, next) => {
         next(error);
     }
 };
+
 
 // Annuler une commande
 exports.cancelOrder = async (req, res, next) => {

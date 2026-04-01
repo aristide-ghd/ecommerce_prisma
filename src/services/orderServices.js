@@ -1,5 +1,6 @@
 const { prisma } = require('../../lib/prisma');
 const { notFoundError, badRequestError, ERROR_CODES } = require('../errors');
+const notFound = require("../middlewares/notFound");
 
 
 // Fonction pour générer un numéro de commande unique
@@ -136,6 +137,18 @@ exports.createOrder = async (userId, items) => {
 
     return commande;
 };
+
+
+// Logique métier pour récupérer toutes les commandes
+exports.getOrders = async () => {
+    const getOrders = await prisma.commande.findMany();
+
+    if ( getOrders.length === 0 ) {
+        throw notFoundError('Aucune commande trouvé');
+    }
+
+    return getOrders;
+}
 
 
 // Logique métier pour récupérer les commandes d'un utilisateur

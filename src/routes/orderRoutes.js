@@ -17,6 +17,13 @@ router.post(
     orderController.createOrder
 );
 
+// Route pour récupérer toutes les commandes
+router.get(
+    '/',
+    authMiddleware,
+    orderController.getOrders
+);
+
 // Route pour récupérer les commandes de l'utilisateur connecté
 router.get(
     '/my-orders',
@@ -56,7 +63,7 @@ router.patch(
 
 // Route pour supprimer une commande
 router.delete(
-    '/:id/delete',
+    '/:id',
     authMiddleware,
     orderController.deleteOrder
 )
