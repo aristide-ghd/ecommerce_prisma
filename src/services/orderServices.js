@@ -372,19 +372,23 @@ exports.getNumberOrders = async (userId) => {
         throw notFoundError('Commande non trouvée', ERROR_CODES.ORDER_NOT_FOUND)
     }
 
-    return result;
+    const montant_total = result._sum.montantTotal;
+    const nombre_de_commande = result._count.id;
+
+    return {montant_total, nombre_de_commande};
 }
 
 
-// Logique pour afficher les commandes par statut
-exports.getOrdersStatus = async(statut) => {
+// Logique pour afficher les commandes de l'user connecté par statut
+exports.getOrdersStatus = async(userId, statut) => {
     const result = await prisma.commande.findMany({
         where: {
+            userId,
             statut: statut
         }
     })
 
-    if (!result) {
+    if (result.length === 0) {
         throw notFoundError('Commande non trouvée', ERROR_CODES.ORDER_NOT_FOUND)
     }
 

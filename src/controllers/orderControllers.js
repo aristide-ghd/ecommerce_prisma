@@ -199,10 +199,17 @@ exports.getNumberOrders = async (req, res, next) => {
 
 
 // Afficher les commandes par statut
-exports.getOrdersByStatus = async (req, res, next) => {
+exports.getOrdersStatus = async (req, res, next) => {
     try{
-        const { status } = req.query;
+        const { statut } = req.query;
+        const userId = req.user.userId;
 
+        const orderStatus = await orderServices.getOrdersStatus(userId, statut);
+
+        res.status(200).json({
+            success: true,
+            data: orderStatus
+        })
     }catch (error) {
         next(error);
     }

@@ -1,5 +1,6 @@
 const { prisma } = require('../../lib/prisma');
 const { notFoundError, conflictError, ERROR_CODES } = require('../errors');
+const {getProductsCategory} = require("../controllers/productControllers");
 
 // Logique metier pour ajouter un produit
 exports.createProduct = async (data) => {
@@ -254,4 +255,41 @@ exports.countProductsByCategory = async (userId, category) => {
     }
 
     return countByCategory;
+}
+
+
+// Logique métier pour récupérer les produits de chaque catégorie
+exports.getProductsCategory = async() => {
+    // Récupérer toutes les catégories
+    const getCategory = await prisma.product.findMany({
+        where: {
+            isActive: true
+        },
+        select: {
+            category: true
+        },
+        distinct: ['category']
+    })
+
+    // Pour chaque catégorie afficher la liste des produits
+    let result = [];
+
+    for (const categories of getCategory) {
+        const categoryName = categories.category
+
+        const getProductsCategory = await prisma.product.findMany({
+            where: {
+                isActive: true,
+                category: categoryName
+            }
+        })
+
+        result.push({
+            category: categoryName,
+            products: getProductsCategory
+        });
+    }
+
+
+    return result;
 }

@@ -32,6 +32,14 @@ router.get(
 )
 
 
+// Récupérer les produits et chaque categories
+router.get(
+    '/grouped-by-categories',
+    authMiddleware,
+    productController.getProductsCategory
+)
+
+
 // Route pour récupérer la liste des produits actifs ou inactifs de l'utilisateur connecté
 router.get(
     '/filter',

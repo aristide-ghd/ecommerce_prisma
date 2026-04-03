@@ -17,12 +17,14 @@ router.post(
     orderController.createOrder
 );
 
+
 // Route pour récupérer toutes les commandes
 router.get(
     '/',
     authMiddleware,
     orderController.getOrders
 );
+
 
 // Route pour récupérer les commandes de l'utilisateur connecté
 router.get(
@@ -31,12 +33,22 @@ router.get(
     orderController.getUserOrders
 );
 
+
 // Route pour le nombre de commandes et le montant total dépensé
 router.get(
     '/stats',
     authMiddleware,
     orderController.getNumberOrders
-)
+);
+
+
+// Route pour afficher les commandes par status
+router.get(
+    '/status',
+    authMiddleware,
+    orderController.getOrdersStatus
+);
+
 
 // Route pour récupérer une commande par ID
 router.get(
@@ -44,6 +56,7 @@ router.get(
     authMiddleware,
     orderController.getOrderById
 );
+
 
 // Route pour mettre à jour le statut de la commande
 router.patch(
@@ -53,6 +66,7 @@ router.patch(
     orderController.updateOrderStatus
 );
 
+
 // Route pour mettre à jour le statut de paiement
 router.patch(
     '/:id/paiement',
@@ -61,6 +75,7 @@ router.patch(
     orderController.updatePaymentStatus
 );
 
+
 // Route pour annuler une commande
 router.patch(
     '/:id/annuler',
@@ -68,11 +83,13 @@ router.patch(
     orderController.cancelOrder
 );
 
+
 // Route pour supprimer une commande
 router.delete(
     '/:id',
     authMiddleware,
     orderController.deleteOrder
-)
+);
+
 
 module.exports = router;

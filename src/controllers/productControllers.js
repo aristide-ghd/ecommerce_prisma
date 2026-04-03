@@ -203,3 +203,18 @@ exports.countProductsByCategory = async (req, res, next) => {
         next(error);
     }
 }
+
+
+// Récupérer les catégories et leurs produits
+exports.getProductsCategory = async (req, res, next) => {
+    try{
+        const productsCategories = await productServices.getProductsCategory();
+
+        res.status(200).json({
+            success: true,
+            data: productsCategories
+        })
+    }catch(error){
+        next(error);
+    }
+}
